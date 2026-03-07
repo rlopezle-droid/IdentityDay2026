@@ -5,7 +5,7 @@
 
 // ⚠️ IMPORTANTE: REEMPLAZA ESTO CON TU ID REAL DE LA HOJA
 const CONFIG = {
-  SHEET_ID: '1ABC123xyz...', // <-- REEMPLAZA CON TU ID DE HOJA
+  SHEET_ID: '1bp0O4uvjlv4_f9V3X_IBSIeOLHLlm8Vw01VOMtiBr_c', // <-- REEMPLAZA CON TU ID DE HOJA
   SHEET_NAME: 'Hoja 1',
   EMAIL_NOTIFICACION: 'rodrigo.lopez@SailPoint.com',
   PRIVACY_EMAIL: 'privacy@sailpoint.com'
