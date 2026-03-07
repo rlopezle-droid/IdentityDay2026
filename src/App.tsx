@@ -357,10 +357,20 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0A1628] text-white overflow-x-hidden">
+    /* 1. FONDO PRINCIPAL: Cambiado de #0A1628 (grisáceo) a #050D18 (Navy Profundo de SailPoint) */
+    <div className="min-h-screen bg-[#050D18] text-white overflow-x-hidden selection:bg-[#00A3E0]/30 font-sans">
+      
+      {/* 2. CAPA DE PROFUNDIDAD (Luces de fondo tipo SailPoint) */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-[#0072CE] opacity-[0.07] blur-[120px]" />
+        <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] rounded-full bg-[#00B8A9] opacity-[0.05] blur-[100px]" />
+      </div>
+
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'glass py-3' : 'bg-transparent py-5'
+        isScrolled 
+          ? 'bg-[#050D18]/80 backdrop-blur-lg border-b border-[#003366] py-3' 
+          : 'bg-transparent py-5'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -368,27 +378,35 @@ function App() {
               <img 
                 src="/images/sailpoint-logo-white.png" 
                 alt="SailPoint" 
-                className="h-12 w-auto"
+                className="h-10 w-auto tracking-tight"
               />
             </div>
             
             <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection('novedades')} className="text-sm text-gray-300 hover:text-white transition-colors">Novedades</button>
-              <button onClick={() => scrollToSection('vision')} className="text-sm text-gray-300 hover:text-white transition-colors">Visión</button>
-              <button onClick={() => scrollToSection('partners')} className="text-sm text-gray-300 hover:text-white transition-colors">Partners</button>
-              <button onClick={() => scrollToSection('spy')} className="text-sm text-gray-300 hover:text-white transition-colors">SPY App</button>
-              <button onClick={() => scrollToSection('agenda')} className="text-sm text-gray-300 hover:text-white transition-colors">Agenda</button>
+              {['novedades', 'vision', 'partners', 'spy', 'agenda'].map((item) => (
+                <button 
+                  key={item}
+                  onClick={() => scrollToSection(item)} 
+                  className="text-sm font-medium text-slate-300 hover:text-[#00A3E0] transition-colors capitalize"
+                >
+                  {item}
+                </button>
+              ))}
+              
+              {/* BOTÓN SECUNDARIO (Borde Cyan) */}
               <Button 
                 onClick={() => setQrOpen(true)}
                 variant="outline"
-                className="border-[#00A3E0]/40 text-[#00A3E0] hover:bg-[#00A3E0]/10"
+                className="border-[#00A3E0]/50 text-[#00A3E0] hover:bg-[#00A3E0]/10 bg-transparent rounded-full px-6"
               >
                 <QrCode className="w-4 h-4 mr-2" />
-                QR
+                Acceso QR
               </Button>
+
+              {/* BOTÓN PRINCIPAL (Gradiente SailPoint) */}
               <Button 
                 onClick={() => { setContactType('info'); setContactOpen(true); }}
-                className="btn-primary text-white px-6 py-2 rounded-full font-medium"
+                className="bg-gradient-to-r from-[#0072CE] to-[#00A3E0] hover:brightness-110 text-white px-6 py-2 rounded-full font-bold shadow-lg shadow-[#0072CE]/20 transition-all"
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Contacto
@@ -403,110 +421,91 @@ function App() {
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden glass mt-3 py-4 px-4">
-            <div className="flex flex-col gap-4">
-              <button onClick={() => scrollToSection('novedades')} className="text-left text-gray-300 hover:text-white">Novedades</button>
-              <button onClick={() => scrollToSection('vision')} className="text-left text-gray-300 hover:text-white">Visión</button>
-              <button onClick={() => scrollToSection('partners')} className="text-left text-gray-300 hover:text-white">Partners</button>
-              <button onClick={() => scrollToSection('spy')} className="text-left text-gray-300 hover:text-white">SPY App</button>
-              <button onClick={() => scrollToSection('agenda')} className="text-left text-gray-300 hover:text-white">Agenda</button>
-              <Button 
-                onClick={() => { setContactType('info'); setContactOpen(true); setMobileMenuOpen(false); }}
-                className="btn-primary text-white w-full"
-              >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Contacto
-              </Button>
-            </div>
-          </div>
-        )}
       </nav>
 
       {/* Hero Section */}
-      <section className="hero-bg min-h-screen flex items-center justify-center relative pt-20">
-        <div className="absolute inset-0 grid-pattern opacity-50" />
+      <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        {/* Patrón de puntos sutil */}
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#0072CE 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
         
-        {/* Floating Elements */}
-        <div className="absolute top-1/4 left-10 w-20 h-20 rounded-full bg-[#00A3E0]/20 blur-xl animate-float" />
-        <div className="absolute bottom-1/4 right-10 w-32 h-32 rounded-full bg-[#0066CC]/20 blur-xl animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 rounded-full bg-[#6366F1]/20 blur-xl animate-float" style={{ animationDelay: '4s' }} />
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="text-center lg:text-left animate-slide-up">
-              <Badge className="badge-glow text-[#00A3E0] mb-6 px-4 py-2 text-sm">
-                <Users className="w-4 h-4 mr-2 inline" />
-                Área Privada para Asistentes
+              {/* Badge con efecto Cyan Glow */}
+              <Badge className="bg-[#00A3E0]/10 text-[#00A3E0] border border-[#00A3E0]/30 mb-6 px-4 py-1.5 text-xs font-bold tracking-widest uppercase rounded-full">
+                <Sparkles className="w-3.5 h-3.5 mr-2 inline" />
+                Identity Day Madrid 2026
               </Badge>
               
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                La Era de la{' '}
-                <span className="gradient-text">Identidad Adaptativa</span>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.1] mb-6 tracking-tight">
+                La Era de la <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-[#00A3E0]">
+                  Identidad Adaptativa
+                </span>
               </h1>
               
-              <p className="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
-                Bienvenido al microsite exclusivo del evento SailPoint en Madrid. 
-                Aquí encontrarás toda la información sobre novedades, partners y el programa del día.
+              <p className="text-lg sm:text-xl text-slate-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Únete a los líderes de la industria en Madrid. Descubre cómo la IA generativa y la seguridad de identidad están convergiendo para proteger el futuro empresarial.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-                <div className="flex items-center gap-3 text-gray-300">
+              <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start mb-10">
+                <div className="flex items-center gap-3 px-4 py-2 bg-[#0A1628] border border-[#003366] rounded-xl text-slate-300">
                   <Calendar className="w-5 h-5 text-[#00A3E0]" />
-                  <span>23 de Abril, 2026</span>
+                  <span className="text-sm font-semibold">23 Abril, 2026</span>
                 </div>
-                <div className="flex items-center gap-3 text-gray-300">
+                <div className="flex items-center gap-3 px-4 py-2 bg-[#0A1628] border border-[#003366] rounded-xl text-slate-300">
                   <MapPin className="w-5 h-5 text-[#00A3E0]" />
-                  <span>Madrid, España</span>
+                  <span className="text-sm font-semibold">Palacio Municipal, Madrid</span>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button 
                   onClick={() => scrollToSection('novedades')}
-                  className="btn-primary text-white px-8 py-6 rounded-full text-lg font-semibold"
+                  className="bg-gradient-to-r from-[#0072CE] to-[#00A3E0] text-white px-10 py-7 rounded-full text-lg font-bold shadow-[0_10px_30px_rgba(0,114,206,0.3)] hover:scale-105 transition-all"
                 >
                   Explorar Novedades
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button 
                   onClick={() => scrollToSection('agenda')}
-                  className="btn-secondary text-white px-8 py-6 rounded-full text-lg font-semibold"
+                  variant="outline"
+                  className="border-slate-700 text-white hover:bg-white/5 px-10 py-7 rounded-full text-lg font-bold transition-all"
                 >
                   Ver Agenda
                 </Button>
               </div>
             </div>
 
+            {/* Visual Hero con Glow Cyan */}
             <div className="relative animate-fade-in hidden lg:block">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl glow-cyan">
+              <div className="relative rounded-3xl overflow-hidden border border-[#0072CE]/30 shadow-[0_0_50px_rgba(0,163,224,0.15)]">
                 <img 
                   src="/images/Futuristic%20cyber%20command%20center%20(3).png" 
-                  alt="Cyber Command Center" 
-                  className="w-full h-auto object-cover"
+                  alt="SailPoint Intelligence" 
+                  className="w-full h-auto object-cover transform scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050D18] via-transparent to-transparent opacity-60" />
               </div>
               
-              {/* Stats Cards */}
-              <div className="absolute -bottom-6 -left-6 glass-card rounded-xl p-4 animate-float">
-                <div className="text-3xl font-bold gradient-text">53%</div>
-                <div className="text-sm text-gray-400">Fortune 500</div>
+              {/* Stats Cards Flotantes con estilo SailPoint */}
+              <div className="absolute -bottom-8 -left-8 bg-[#0A1628]/90 backdrop-blur-xl border border-[#003366] rounded-2xl p-5 shadow-2xl animate-float">
+                <div className="text-3xl font-black text-[#00A3E0]">53%</div>
+                <div className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Fortune 500 Trusted</div>
               </div>
               
-              <div className="absolute -top-6 -right-6 glass-card rounded-xl p-4 animate-float" style={{ animationDelay: '1s' }}>
-                <div className="text-3xl font-bold gradient-text-cyan">#1</div>
-                <div className="text-sm text-gray-400">En IGA 2024</div>
+              <div className="absolute -top-8 -right-8 bg-[#0A1628]/90 backdrop-blur-xl border border-[#003366] rounded-2xl p-5 shadow-2xl animate-float-delayed">
+                <div className="text-3xl font-black text-[#00B8A9]">#1</div>
+                <div className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Líder en IGA 2026</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronRight className="w-8 h-8 text-[#00A3E0] rotate-90" />
+        {/* Scroll Indicator (Cyan) */}
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Descubrir</span>
+          <div className="w-[1px] h-12 bg-gradient-to-b from-[#00A3E0] to-transparent" />
         </div>
       </section>
 
