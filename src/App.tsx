@@ -75,29 +75,30 @@ function App() {
     setMobileMenuOpen(false);
   };
 
-  // Función para enviar datos al webhook
+  // Función para enviar datos al webhook - CORREGIDA PARA VERCEL
   const enviarAlWebhook = async (data: any) => {
     try {
-      const response = await fetch(WEBHOOK_URL, {
+      // Usamos text/plain y mode: 'no-cors' para saltar el bloqueo de navegador
+      await fetch(WEBHOOK_URL, {
         method: 'POST',
+        mode: 'no-cors', 
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain',
         },
         body: JSON.stringify(data),
       });
       
-      if (!response.ok) {
-        throw new Error('Error al enviar la solicitud');
-      }
+      // Con 'no-cors' no podemos leer response.ok, 
+      // así que asumimos éxito si no hay una excepción de red.
+      return { success: true };
       
-      return await response.json();
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error en la red:', error);
       throw error;
     }
   };
 
-  // Handler para enviar formulario de contacto
+  // Handler para enviar formulario de contacto - REVISADO
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -116,18 +117,23 @@ function App() {
         email: formData.email,
         empresa: formData.empresa,
         consulta: formData.consulta,
-        cargo: ''
+        cargo: 'Contacto Web'
       });
       
       setSubmitSuccess(true);
-      // Resetear formulario después de 3 segundos
+      
+      // Limpieza de formulario
       setTimeout(() => {
         setSubmitSuccess(false);
         setContactOpen(false);
-        setFormData({ nombre: '', email: '', empresa: '', consulta: '', tipoSesion: '', disponibilidad: '', consentimiento: false });
-      }, 3000);
+        setFormData({ 
+          nombre: '', email: '', empresa: '', consulta: '', 
+          tipoSesion: '', disponibilidad: '', consentimiento: false 
+        });
+      }, 2500);
+      
     } catch (error) {
-      setSubmitError('Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo.');
+      setSubmitError('Error de conexión. Revisa tu internet o inténtalo más tarde.');
     } finally {
       setIsSubmitting(false);
     }
