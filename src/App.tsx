@@ -1172,8 +1172,8 @@ function App() {
             </div>
             <p className="text-gray-400 text-sm mt-4 text-center">
               O visita directamente:<br/>
-              <a href="https://2iqi7hojxgvdi.ok.kimi.link" className="text-[#00A3E0] hover:underline">
-                2iqi7hojxgvdi.ok.kimi.link
+              <a href="https://identity-day-madrid-2026.vercel.app/" className="text-[#00A3E0] hover:underline">
+                IdentityDay - MicroSite 2026
               </a>
             </p>
           </div>
