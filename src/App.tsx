@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { 
-  Cpu, 
-  Network, 
-  Eye, 
-  Lock, 
-  Zap, 
-  Users, 
-  Calendar, 
-  MapPin, 
+import {
+  Cpu,
+  Network,
+  Eye,
+  Lock,
+  Zap,
+  Users,
+  Calendar,
+  MapPin,
   Clock,
   ChevronRight,
   Sparkles,
@@ -31,7 +31,6 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 // URL del Webhook de Google Apps Script
-// REEMPLAZA ESTA URL con la tuya después de desplegar el script
 const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbx9diM0sk3gBM0YOm0q_SX8ugeiOgXOVTJzEV5qoNq7eEdEFzD5ZO6vOQ1tyAs5M8IdHQ/exec';
 
 function App() {
@@ -42,13 +41,11 @@ function App() {
   const [qrOpen, setQrOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'novedades' | 'vision' | 'futuro'>('novedades');
   const [contactType, setContactType] = useState<'info' | 'demo'>('info');
-  
-  // Estados para formularios
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  
-  // Estados para datos del formulario
+
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -63,6 +60,7 @@ function App() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -75,41 +73,35 @@ function App() {
     setMobileMenuOpen(false);
   };
 
-  // Función para enviar datos al webhook - CORREGIDA PARA VERCEL
   const enviarAlWebhook = async (data: any) => {
     try {
-      // Usamos text/plain y mode: 'no-cors' para saltar el bloqueo de navegador
       await fetch(WEBHOOK_URL, {
         method: 'POST',
-        mode: 'no-cors', 
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'text/plain',
         },
         body: JSON.stringify(data),
       });
-      
-      // Con 'no-cors' no podemos leer response.ok, 
-      // así que asumimos éxito si no hay una excepción de red.
+
       return { success: true };
-      
     } catch (error) {
       console.error('Error en la red:', error);
       throw error;
     }
   };
 
-  // Handler para enviar formulario de contacto - REVISADO
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.consentimiento) {
       setSubmitError('Debes aceptar la política de privacidad para continuar.');
       return;
     }
-    
+
     setIsSubmitting(true);
     setSubmitError('');
-    
+
     try {
       await enviarAlWebhook({
         tipo: contactType,
@@ -119,19 +111,23 @@ function App() {
         consulta: formData.consulta,
         cargo: 'Contacto Web'
       });
-      
+
       setSubmitSuccess(true);
-      
-      // Limpieza de formulario
+
       setTimeout(() => {
         setSubmitSuccess(false);
         setContactOpen(false);
-        setFormData({ 
-          nombre: '', email: '', empresa: '', consulta: '', 
-          tipoSesion: '', disponibilidad: '', consentimiento: false 
+        setFormData({
+          nombre: '',
+          email: '',
+          empresa: '',
+          consulta: '',
+          tipoSesion: '',
+          disponibilidad: '',
+          consentimiento: false
         });
       }, 2500);
-      
+
     } catch (error) {
       setSubmitError('Error de conexión. Revisa tu internet o inténtalo más tarde.');
     } finally {
@@ -139,18 +135,17 @@ function App() {
     }
   };
 
-  // Handler para enviar formulario de agenda
   const handleScheduleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.consentimiento) {
       setSubmitError('Debes aceptar la política de privacidad para continuar.');
       return;
     }
-    
+
     setIsSubmitting(true);
     setSubmitError('');
-    
+
     try {
       await enviarAlWebhook({
         tipo: 'demo',
@@ -160,12 +155,21 @@ function App() {
         consulta: `Tipo de sesión: ${formData.tipoSesion}. Disponibilidad: ${formData.disponibilidad}`,
         cargo: formData.tipoSesion
       });
-      
+
       setSubmitSuccess(true);
+
       setTimeout(() => {
         setSubmitSuccess(false);
         setScheduleOpen(false);
-        setFormData({ nombre: '', email: '', empresa: '', consulta: '', tipoSesion: '', disponibilidad: '', consentimiento: false });
+        setFormData({
+          nombre: '',
+          email: '',
+          empresa: '',
+          consulta: '',
+          tipoSesion: '',
+          disponibilidad: '',
+          consentimiento: false
+        });
       }, 3000);
     } catch (error) {
       setSubmitError('Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo.');
@@ -174,8 +178,13 @@ function App() {
     }
   };
 
-  // Componente de checkbox RGPD
-  const CheckboxRGPD = ({ checked, onChange }: { checked: boolean; onChange: (checked: boolean) => void }) => (
+  const CheckboxRGPD = ({
+    checked,
+    onChange
+  }: {
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+  }) => (
     <div className="flex items-start gap-3 p-4 rounded-lg bg-white/5 border border-white/10">
       <input
         type="checkbox"
@@ -189,8 +198,8 @@ function App() {
         <a href="#" className="text-[#00A3E0] hover:underline" target="_blank" rel="noopener noreferrer">
           Política de Privacidad
         </a>{' '}
-        y el tratamiento de mis datos personales para gestionar mi solicitud de información sobre los productos y servicios de SailPoint. 
-        Entiendo que mis datos serán tratados conforme al RGPD y podré ejercer mis derechos de acceso, rectificación, supresión, 
+        y el tratamiento de mis datos personales para gestionar mi solicitud de información sobre los productos y servicios de SailPoint.
+        Entiendo que mis datos serán tratados conforme al RGPD y podré ejercer mis derechos de acceso, rectificación, supresión,
         oposición, limitación del tratamiento y portabilidad dirigiéndome a:{' '}
         <a href="mailto:privacy@sailpoint.com" className="text-[#00A3E0] hover:underline">
           privacy@sailpoint.com
@@ -365,20 +374,20 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img 
-                src="/images/Logo.svg" 
-                alt="SailPoint" 
+              <img
+                src="/images/Logo.svg"
+                alt="SailPoint"
                 className="h-12 w-auto"
               />
             </div>
-            
+
             <div className="hidden md:flex items-center gap-8">
               <button onClick={() => scrollToSection('novedades')} className="text-sm text-gray-300 hover:text-white transition-colors">Novedades</button>
               <button onClick={() => scrollToSection('vision')} className="text-sm text-gray-300 hover:text-white transition-colors">Visión</button>
               <button onClick={() => scrollToSection('partners')} className="text-sm text-gray-300 hover:text-white transition-colors">Partners</button>
               <button onClick={() => scrollToSection('spy')} className="text-sm text-gray-300 hover:text-white transition-colors">SPY App</button>
               <button onClick={() => scrollToSection('agenda')} className="text-sm text-gray-300 hover:text-white transition-colors">Agenda</button>
-              <Button 
+              <Button
                 onClick={() => setQrOpen(true)}
                 variant="outline"
                 className="border-[#00A3E0]/40 text-[#00A3E0] hover:bg-[#00A3E0]/10"
@@ -386,7 +395,7 @@ function App() {
                 <QrCode className="w-4 h-4 mr-2" />
                 QR
               </Button>
-              <Button 
+              <Button
                 onClick={() => { setContactType('info'); setContactOpen(true); }}
                 className="btn-primary text-white px-6 py-2 rounded-full font-medium"
               >
@@ -395,7 +404,7 @@ function App() {
               </Button>
             </div>
 
-            <button 
+            <button
               className="md:hidden text-white"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
@@ -413,7 +422,7 @@ function App() {
               <button onClick={() => scrollToSection('partners')} className="text-left text-gray-300 hover:text-white">Partners</button>
               <button onClick={() => scrollToSection('spy')} className="text-left text-gray-300 hover:text-white">SPY App</button>
               <button onClick={() => scrollToSection('agenda')} className="text-left text-gray-300 hover:text-white">Agenda</button>
-              <Button 
+              <Button
                 onClick={() => { setContactType('info'); setContactOpen(true); setMobileMenuOpen(false); }}
                 className="btn-primary text-white w-full"
               >
@@ -425,86 +434,89 @@ function App() {
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="hero-bg min-h-screen flex items-center justify-center relative pt-20">
+      {/* Hero Section - alternativa 8 */}
+      <section className="hero-bg min-h-screen flex items-center justify-center relative pt-24 pb-16">
         <div className="absolute inset-0 grid-pattern opacity-50" />
-        
-        {/* Floating Elements */}
+
         <div className="absolute top-1/4 left-10 w-20 h-20 rounded-full bg-[#00A3E0]/20 blur-xl animate-float" />
         <div className="absolute bottom-1/4 right-10 w-32 h-32 rounded-full bg-[#0066CC]/20 blur-xl animate-float" style={{ animationDelay: '2s' }} />
         <div className="absolute top-1/2 right-1/4 w-16 h-16 rounded-full bg-[#6366F1]/20 blur-xl animate-float" style={{ animationDelay: '4s' }} />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left animate-slide-up">
-              <Badge className="badge-glow text-[#00A3E0] mb-6 px-4 py-2 text-sm">
-                <Users className="w-4 h-4 mr-2 inline" />
-                Área Privada para Asistentes
-              </Badge>
-              
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                La Era de la{' '}
-                <span className="gradient-text">Identidad Adaptativa</span>
-              </h1>
-              
-              <p className="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
-                Bienvenido al microsite exclusivo del evento SailPoint en Madrid. 
-                Aquí encontrarás toda la información sobre novedades, partners y el programa del día.
-              </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+          <div className="max-w-4xl mx-auto text-center animate-slide-up">
+            <Badge className="badge-glow text-[#00A3E0] mb-6 px-4 py-2 text-sm">
+              <Users className="w-4 h-4 mr-2 inline" />
+              Área Privada para Asistentes
+            </Badge>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Calendar className="w-5 h-5 text-[#00A3E0]" />
-                  <span>23 de Abril, 2026</span>
-                </div>
-                <div className="flex items-center gap-3 text-gray-300">
-                  <MapPin className="w-5 h-5 text-[#00A3E0]" />
-                  <span>Madrid, España</span>
-                </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              La Era de la{' '}
+              <span className="gradient-text">Identidad Adaptativa</span>
+            </h1>
+
+            <p className="text-lg sm:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Bienvenido al microsite exclusivo del evento SailPoint en Madrid.
+              Aquí encontrarás toda la información sobre novedades, partners y el programa del día.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <div className="flex items-center gap-3 text-gray-300 justify-center">
+                <Calendar className="w-5 h-5 text-[#00A3E0]" />
+                <span>23 de Abril, 2026</span>
               </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  onClick={() => scrollToSection('novedades')}
-                  className="btn-primary text-white px-8 py-6 rounded-full text-lg font-semibold"
-                >
-                  Explorar Novedades
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button 
-                  onClick={() => scrollToSection('agenda')}
-                  className="btn-secondary text-white px-8 py-6 rounded-full text-lg font-semibold"
-                >
-                  Ver Agenda
-                </Button>
+              <div className="flex items-center gap-3 text-gray-300 justify-center">
+                <MapPin className="w-5 h-5 text-[#00A3E0]" />
+                <span>Madrid, España</span>
               </div>
             </div>
 
-            <div className="relative animate-fade-in hidden lg:block">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl glow-cyan">
-                <img 
-                  src="/images/Futuristic%20cyber%20command%20center%20(3).png" 
-                  alt="Cyber Command Center" 
-                  className="w-full h-auto object-cover"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button
+                onClick={() => scrollToSection('novedades')}
+                className="btn-primary text-white px-8 py-6 rounded-full text-lg font-semibold"
+              >
+                Explorar Novedades
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button
+                onClick={() => scrollToSection('agenda')}
+                className="btn-secondary text-white px-8 py-6 rounded-full text-lg font-semibold"
+              >
+                Ver Agenda
+              </Button>
+            </div>
+          </div>
+
+          {/* Hero video */}
+          <div className="relative max-w-6xl mx-auto animate-fade-in">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl glow-cyan border border-white/10 bg-[#091426]">
+              <div className="relative w-full pb-[56.25%]">
+                <iframe
+                  src="https://app.heygen.com/embeds/501be1156fb1476aad197bdd98deadd2"
+                  title="SailPoint Event Video"
+                  className="absolute inset-0 w-full h-full"
+                  frameBorder="0"
+                  allow="encrypted-media; fullscreen;"
+                  allowFullScreen
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1628]/80 via-transparent to-transparent" />
               </div>
-              
-              {/* Stats Cards */}
-              <div className="absolute -bottom-6 -left-6 glass-card rounded-xl p-4 animate-float">
-                <div className="text-3xl font-bold gradient-text">53%</div>
-                <div className="text-sm text-gray-400">Fortune 500</div>
-              </div>
-              
-              <div className="absolute -top-6 -right-6 glass-card rounded-xl p-4 animate-float" style={{ animationDelay: '1s' }}>
-                <div className="text-3xl font-bold gradient-text-cyan">#1</div>
-                <div className="text-sm text-gray-400">En IGA 2024</div>
-              </div>
+
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0A1628]/70 via-transparent to-transparent" />
+            </div>
+
+            {/* Stats floating cards */}
+            <div className="hidden md:block absolute -bottom-6 left-6 glass-card rounded-xl p-4 animate-float">
+              <div className="text-3xl font-bold gradient-text">53%</div>
+              <div className="text-sm text-gray-400">Fortune 500</div>
+            </div>
+
+            <div className="hidden md:block absolute -top-6 right-6 glass-card rounded-xl p-4 animate-float" style={{ animationDelay: '1s' }}>
+              <div className="text-3xl font-bold gradient-text-cyan">#1</div>
+              <div className="text-sm text-gray-400">En IGA 2024</div>
             </div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <ChevronRight className="w-8 h-8 text-[#00A3E0] rotate-90" />
         </div>
@@ -532,7 +544,7 @@ function App() {
       {/* Novedades Section */}
       <section id="novedades" className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0066CC]/5 to-transparent" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <Badge className="badge-glow text-[#00A3E0] mb-4">
@@ -543,7 +555,7 @@ function App() {
               Innovaciones que <span className="gradient-text">Transforman</span>
             </h2>
             <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-              SailPoint presenta una ola de innovaciones diseñadas para abordar los desafíos más apremiantes 
+              SailPoint presenta una ola de innovaciones diseñadas para abordar los desafíos más apremiantes
               que enfrentan las empresas hoy en día.
             </p>
           </div>
@@ -552,8 +564,8 @@ function App() {
             {innovations.map((item, index) => (
               <div key={index} className="glass-card rounded-2xl overflow-hidden card-hover group">
                 <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
@@ -568,7 +580,7 @@ function App() {
                   <h3 className="text-xl font-bold mb-3">{item.title}</h3>
                   <p className="text-gray-400 text-sm leading-relaxed mb-4">{item.description}</p>
                   <div className="flex gap-3">
-                    <Button 
+                    <Button
                       onClick={() => { setContactType('info'); setContactOpen(true); }}
                       variant="outline"
                       size="sm"
@@ -577,7 +589,7 @@ function App() {
                       <Info className="w-4 h-4 mr-2" />
                       Más información
                     </Button>
-                    <Button 
+                    <Button
                       onClick={() => setScheduleOpen(true)}
                       variant="outline"
                       size="sm"
@@ -597,7 +609,6 @@ function App() {
       {/* Vision & Strategy Section */}
       <section id="vision" className="py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Tabs */}
           <div className="flex justify-center mb-12">
             <div className="glass rounded-full p-1 flex gap-1">
               {(['novedades', 'vision', 'futuro'] as const).map((tab) => (
@@ -605,8 +616,8 @@ function App() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-3 rounded-full text-sm font-medium transition-all ${
-                    activeTab === tab 
-                      ? 'bg-gradient-to-r from-[#0066CC] to-[#00A3E0] text-white' 
+                    activeTab === tab
+                      ? 'bg-gradient-to-r from-[#0066CC] to-[#00A3E0] text-white'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -624,11 +635,11 @@ function App() {
                     Una Nueva Era de <span className="gradient-text">Seguridad de Identidad</span>
                   </h2>
                   <p className="text-gray-400 mb-8 text-lg">
-                    Las paredes que alguna vez definieron la empresa—redes, perímetros, departamentos—ya no 
-                    proporcionan protección adecuada. Las identidades abarcan humanos, máquinas y agentes de IA, 
+                    Las paredes que alguna vez definieron la empresa—redes, perímetros, departamentos—ya no
+                    proporcionan protección adecuada. Las identidades abarcan humanos, máquinas y agentes de IA,
                     todas accediendo a aplicaciones y datos, creando una vasta nueva superficie de ataque.
                   </p>
-                  
+
                   <div className="space-y-4">
                     {[
                       "Descubre y gobierna agentes de IA como certificas humanos",
@@ -644,7 +655,7 @@ function App() {
                   </div>
 
                   <div className="mt-8 flex gap-4">
-                    <Button 
+                    <Button
                       onClick={() => { setContactType('info'); setContactOpen(true); }}
                       className="btn-primary text-white"
                     >
@@ -654,8 +665,8 @@ function App() {
                   </div>
                 </div>
                 <div className="relative">
-                  <img 
-                    src="/images/Slide%204%20-%20Rouge%20AI%20Agent%20Hidden.png" 
+                  <img
+                    src="/images/Slide%204%20-%20Rouge%20AI%20Agent%20Hidden.png"
                     alt="Security Vision"
                     className="rounded-2xl shadow-2xl"
                   />
@@ -671,7 +682,7 @@ function App() {
                   Los Pilares de la <span className="gradient-text">Identidad Adaptativa</span>
                 </h2>
                 <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-                  La Plataforma SailPoint ofrece seguridad identity-first, data-first con inteligencia de IA 
+                  La Plataforma SailPoint ofrece seguridad identity-first, data-first con inteligencia de IA
                   que guía cómo las empresas gobiernan el acceso, detectan riesgos y responden a amenazas.
                 </p>
               </div>
@@ -693,8 +704,8 @@ function App() {
                   <div>
                     <h3 className="text-2xl font-bold mb-4">Arquitectura de Cinco Capas</h3>
                     <p className="text-gray-400 mb-6">
-                      En su base está Atlas, el modelo de datos unificado y grafo enriquecido con servicios 
-                      comunes de IA. Sobre eso, el plano de control para todas las identidades, centralizando 
+                      En su base está Atlas, el modelo de datos unificado y grafo enriquecido con servicios
+                      comunes de IA. Sobre eso, el plano de control para todas las identidades, centralizando
                       el gobierno de humanos y agentes por igual.
                     </p>
                     <div className="space-y-3">
@@ -718,8 +729,8 @@ function App() {
                     </div>
                   </div>
                   <div className="relative">
-                    <img 
-                      src="/images/Futuristic%20cyber%20command%20center%20(5).png" 
+                    <img
+                      src="/images/Futuristic%20cyber%20command%20center%20(5).png"
                       alt="Platform Architecture"
                       className="rounded-2xl shadow-2xl"
                     />
@@ -728,7 +739,7 @@ function App() {
               </div>
 
               <div className="mt-8 text-center">
-                <Button 
+                <Button
                   onClick={() => setScheduleOpen(true)}
                   className="btn-primary text-white px-8 py-4 rounded-full"
                 >
@@ -746,7 +757,7 @@ function App() {
                   El <span className="gradient-text">Futuro</span> de la Seguridad de Identidad
                 </h2>
                 <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-                  SailPoint continúa innovando para preparar a las empresas para las realidades de un 
+                  SailPoint continúa innovando para preparar a las empresas para las realidades de un
                   panorama de amenazas dinámico.
                 </p>
               </div>
@@ -757,8 +768,8 @@ function App() {
                     <div className="flex items-start justify-between mb-4">
                       <h3 className="text-xl font-bold">{feature.title}</h3>
                       <Badge className={`${
-                        feature.status === 'Disponible' 
-                          ? 'bg-green-500/20 text-green-400 border-green-500/40' 
+                        feature.status === 'Disponible'
+                          ? 'bg-green-500/20 text-green-400 border-green-500/40'
                           : feature.status === 'En desarrollo'
                           ? 'bg-blue-500/20 text-blue-400 border-blue-500/40'
                           : 'bg-purple-500/20 text-purple-400 border-purple-500/40'
@@ -774,7 +785,7 @@ function App() {
               <div className="mt-12 text-center">
                 <div className="inline-block glass-card rounded-2xl p-8">
                   <blockquote className="text-xl italic text-gray-300 mb-4">
-                    "Las prácticas de seguridad estática no pueden mantener el ritmo con un mundo dinámico. 
+                    "Las prácticas de seguridad estática no pueden mantener el ritmo con un mundo dinámico.
                     La industria debe adoptar un enfoque más adaptativo—uno que evolucione tan rápido como el negocio mismo."
                   </blockquote>
                   <cite className="text-[#00A3E0] not-italic font-semibold">— SailPoint Leadership</cite>
@@ -782,7 +793,7 @@ function App() {
               </div>
 
               <div className="mt-8 text-center">
-                <Button 
+                <Button
                   onClick={() => { setContactType('info'); setContactOpen(true); }}
                   variant="outline"
                   className="border-[#00A3E0]/40 text-[#00A3E0] hover:bg-[#00A3E0]/10 px-8 py-4"
@@ -799,7 +810,7 @@ function App() {
       {/* Partners Section */}
       <section id="partners" className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0066CC]/5 via-transparent to-[#00A3E0]/5" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <Badge className="badge-glow text-[#00A3E0] mb-4">
@@ -810,7 +821,7 @@ function App() {
               Colaboradores <span className="gradient-text">Estratégicos</span>
             </h2>
             <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-              Conoce a nuestros partners que participan en el evento y descubre cómo pueden 
+              Conoce a nuestros partners que participan en el evento y descubre cómo pueden
               ayudarte en tu journey de transformación digital.
             </p>
           </div>
@@ -852,7 +863,7 @@ function App() {
               SailPoint <span className="gradient-text">SPY Event</span>
             </h2>
             <p className="text-gray-400 max-w-3xl mx-auto text-lg">
-              Explora nuestra aplicación interactiva para descubrir más sobre el evento, 
+              Explora nuestra aplicación interactiva para descubrir más sobre el evento,
               participar en actividades y conectar con otros asistentes.
             </p>
           </div>
@@ -872,7 +883,7 @@ function App() {
                 <h3 className="text-lg font-bold mb-1">Aplicación SPY Event</h3>
                 <p className="text-gray-400 text-sm">Interactúa con la app en tiempo real</p>
               </div>
-              <Button 
+              <Button
                 onClick={() => window.open('https://sailpoint-spy-event.vercel.app/', '_blank')}
                 className="btn-primary text-white"
               >
@@ -887,7 +898,7 @@ function App() {
       {/* Event Info Section */}
       <section className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0066CC]/5 via-transparent to-[#00A3E0]/5" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -895,14 +906,14 @@ function App() {
                 <Calendar className="w-4 h-4 mr-2 inline" />
                 23 de Abril, 2026
               </Badge>
-              
+
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
                 Madrid: Epicentro de la{' '}
                 <span className="gradient-text">Innovación</span>
               </h2>
-              
+
               <p className="text-gray-400 text-lg mb-8">
-                Una jornada única donde desvelaremos las novedades más esperadas de SailPoint. 
+                Una jornada única donde desvelaremos las novedades más esperadas de SailPoint.
                 Nuestros clientes y partners compartirán cómo la Identidad está transformando el panorama de la ciberseguridad.
               </p>
 
@@ -938,7 +949,7 @@ function App() {
                 </div>
               </div>
 
-              <Button 
+              <Button
                 onClick={() => { setContactType('info'); setContactOpen(true); }}
                 className="btn-primary text-white px-8 py-6 rounded-full text-lg font-semibold"
               >
@@ -948,13 +959,12 @@ function App() {
             </div>
 
             <div className="relative">
-              <img 
-                src="/images/Futuristic%20cyber%20command%20center%20(1).png" 
+              <img
+                src="/images/Futuristic%20cyber%20command%20center%20(1).png"
                 alt="Madrid Event"
                 className="rounded-2xl shadow-2xl"
               />
-              
-              {/* Event Info Card */}
+
               <div className="absolute -bottom-6 -left-6 glass-card rounded-xl p-6 max-w-xs">
                 <div className="flex items-center gap-3 mb-4">
                   <MapPin className="w-5 h-5 text-[#00A3E0]" />
@@ -988,7 +998,6 @@ function App() {
           </div>
 
           <div className="relative">
-            {/* Timeline Line */}
             <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 timeline-line transform md:-translate-x-1/2" />
 
             <div className="space-y-8">
@@ -996,10 +1005,8 @@ function App() {
                 <div key={index} className={`relative flex items-start gap-8 ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}>
-                  {/* Timeline Dot */}
                   <div className="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-[#0066CC] to-[#00A3E0] transform -translate-x-1/2 mt-6 z-10 shadow-lg shadow-[#00A3E0]/50" />
-                  
-                  {/* Content */}
+
                   <div className={`ml-12 md:ml-0 md:w-5/12 ${
                     index % 2 === 0 ? 'md:text-right md:pr-12' : 'md:text-left md:pl-12'
                   }`}>
@@ -1014,8 +1021,7 @@ function App() {
                       <p className="text-gray-400 text-sm">{item.description}</p>
                     </div>
                   </div>
-                  
-                  {/* Empty space for other side */}
+
                   <div className="hidden md:block md:w-5/12" />
                 </div>
               ))}
@@ -1027,14 +1033,14 @@ function App() {
               ¿Tienes preguntas sobre alguna sesión específica?
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 onClick={() => { setContactType('info'); setContactOpen(true); }}
                 className="btn-primary text-white"
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Consultar sobre sesiones
               </Button>
-              <Button 
+              <Button
                 onClick={() => setScheduleOpen(true)}
                 variant="outline"
                 className="border-[#00A3E0]/40 text-[#00A3E0] hover:bg-[#00A3E0]/10"
@@ -1050,25 +1056,25 @@ function App() {
       {/* CTA Section */}
       <section className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-[#0066CC]/20 via-[#00A3E0]/20 to-[#6366F1]/20" />
-        
+
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             ¿Necesitas <span className="gradient-text">más información</span>?
           </h2>
           <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-            Nuestro equipo está disponible para resolver tus dudas, proporcionarte documentación adicional 
+            Nuestro equipo está disponible para resolver tus dudas, proporcionarte documentación adicional
             o agendar una sesión personalizada post-evento.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
+            <Button
               onClick={() => { setContactType('info'); setContactOpen(true); }}
               className="btn-primary text-white px-10 py-6 rounded-full text-lg font-semibold"
             >
               <MessageSquare className="w-5 h-5 mr-2" />
               Solicitar información
             </Button>
-            <Button 
+            <Button
               onClick={() => setScheduleOpen(true)}
               variant="outline"
               className="border-[#00A3E0]/40 text-[#00A3E0] hover:bg-[#00A3E0]/10 px-10 py-6 rounded-full text-lg font-semibold"
@@ -1086,9 +1092,9 @@ function App() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img 
-                  src="/images/Logo.svg" 
-                  alt="SailPoint" 
+                <img
+                  src="/images/Logo.svg"
+                  alt="SailPoint"
                   className="h-12 w-auto"
                 />
               </div>
@@ -1096,7 +1102,7 @@ function App() {
                 La plataforma líder en seguridad de identidad empresarial.
               </p>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4">Evento</h4>
               <ul className="space-y-2 text-sm text-gray-400">
@@ -1106,7 +1112,7 @@ function App() {
                 <li><button onClick={() => scrollToSection('agenda')} className="hover:text-white transition-colors">Agenda</button></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4">Recursos</h4>
               <ul className="space-y-2 text-sm text-gray-400">
@@ -1115,7 +1121,7 @@ function App() {
                 <li><a href="https://www.sailpoint.com/blog" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Blog</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4">Contacto</h4>
               <ul className="space-y-2 text-sm text-gray-400">
@@ -1125,9 +1131,9 @@ function App() {
               </ul>
             </div>
           </div>
-          
+
           <div className="section-divider mb-8" />
-          
+
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
               © 2026 SailPoint Technologies, Inc. Todos los derechos reservados.
@@ -1152,15 +1158,14 @@ function App() {
               Accede al microsite desde tu móvil escaneando este código
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex flex-col items-center py-6">
             <div className="bg-white p-4 rounded-xl">
-              <img 
-                src="/images/qr-code.png" 
-                alt="QR Code" 
+              <img
+                src="/images/qr-code.png"
+                alt="QR Code"
                 className="w-48 h-48"
                 onError={(e) => {
-                  // Fallback si la imagen no existe
                   const target = e.target as HTMLImageElement;
                   target.style.display = 'none';
                   const parent = target.parentElement;
@@ -1171,7 +1176,8 @@ function App() {
               />
             </div>
             <p className="text-gray-400 text-sm mt-4 text-center">
-              O visita directamente:<br/>
+              O visita directamente:
+              <br />
               <a href="https://identity-day-madrid-2026.vercel.app/" className="text-[#00A3E0] hover:underline">
                 IdentityDay - MicroSite 2026
               </a>
@@ -1189,12 +1195,12 @@ function App() {
               <span className="gradient-text">Información</span>
             </DialogTitle>
             <DialogDescription className="text-center text-gray-400">
-              {contactType === 'info' 
-                ? 'Completa tus datos y nos pondremos en contacto contigo.' 
+              {contactType === 'info'
+                ? 'Completa tus datos y nos pondremos en contacto contigo.'
                 : 'Agenda una sesión personalizada post-evento con nuestro equipo.'}
             </DialogDescription>
           </DialogHeader>
-          
+
           {submitSuccess ? (
             <div className="py-8 text-center">
               <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
@@ -1207,10 +1213,10 @@ function App() {
             <form className="space-y-4 mt-4" onSubmit={handleContactSubmit}>
               <div>
                 <label className="block text-sm font-medium mb-2">Nombre completo *</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={formData.nombre}
-                  onChange={(e) => setFormData({...formData, nombre: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors"
                   placeholder="Tu nombre"
                   required
@@ -1218,10 +1224,10 @@ function App() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Correo electrónico *</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors"
                   placeholder="tu@empresa.com"
                   required
@@ -1229,10 +1235,10 @@ function App() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Empresa *</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={formData.empresa}
-                  onChange={(e) => setFormData({...formData, empresa: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, empresa: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors"
                   placeholder="Nombre de tu empresa"
                   required
@@ -1242,28 +1248,27 @@ function App() {
                 <label className="block text-sm font-medium mb-2">
                   {contactType === 'info' ? '¿Sobre qué tema necesitas información?' : '¿Qué día prefieres para la sesión?'}
                 </label>
-                <textarea 
+                <textarea
                   value={formData.consulta}
-                  onChange={(e) => setFormData({...formData, consulta: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, consulta: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors resize-none"
                   rows={3}
                   placeholder={contactType === 'info' ? 'Describe tu consulta...' : 'Indica tu disponibilidad...'}
                 />
               </div>
-              
-              {/* Checkbox RGPD */}
-              <CheckboxRGPD 
-                checked={formData.consentimiento} 
-                onChange={(checked) => setFormData({...formData, consentimiento: checked})} 
+
+              <CheckboxRGPD
+                checked={formData.consentimiento}
+                onChange={(checked) => setFormData({ ...formData, consentimiento: checked })}
               />
-              
+
               {submitError && (
                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
                   {submitError}
                 </div>
               )}
-              
-              <Button 
+
+              <Button
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full btn-primary text-white py-4 rounded-lg font-semibold mt-6 disabled:opacity-50"
@@ -1293,7 +1298,7 @@ function App() {
               Programa una sesión personalizada con nuestro equipo técnico o comercial después del evento.
             </DialogDescription>
           </DialogHeader>
-          
+
           {submitSuccess ? (
             <div className="py-8 text-center">
               <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
@@ -1306,10 +1311,10 @@ function App() {
             <form className="space-y-4 mt-4" onSubmit={handleScheduleSubmit}>
               <div>
                 <label className="block text-sm font-medium mb-2">Nombre completo *</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={formData.nombre}
-                  onChange={(e) => setFormData({...formData, nombre: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors"
                   placeholder="Tu nombre"
                   required
@@ -1317,10 +1322,10 @@ function App() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Correo electrónico *</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors"
                   placeholder="tu@empresa.com"
                   required
@@ -1328,10 +1333,10 @@ function App() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Empresa *</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={formData.empresa}
-                  onChange={(e) => setFormData({...formData, empresa: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, empresa: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors"
                   placeholder="Nombre de tu empresa"
                   required
@@ -1339,9 +1344,9 @@ function App() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Tipo de sesión *</label>
-                <select 
+                <select
                   value={formData.tipoSesion}
-                  onChange={(e) => setFormData({...formData, tipoSesion: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, tipoSesion: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#00A3E0] transition-colors"
                   required
                 >
@@ -1354,28 +1359,27 @@ function App() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Preferencia de fecha/hora</label>
-                <textarea 
+                <textarea
                   value={formData.disponibilidad}
-                  onChange={(e) => setFormData({...formData, disponibilidad: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, disponibilidad: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#00A3E0] transition-colors resize-none"
                   rows={2}
                   placeholder="Indica tu disponibilidad (ej: Semana del 28 de abril, mañanas)..."
                 />
               </div>
-              
-              {/* Checkbox RGPD */}
-              <CheckboxRGPD 
-                checked={formData.consentimiento} 
-                onChange={(checked) => setFormData({...formData, consentimiento: checked})} 
+
+              <CheckboxRGPD
+                checked={formData.consentimiento}
+                onChange={(checked) => setFormData({ ...formData, consentimiento: checked })}
               />
-              
+
               {submitError && (
                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
                   {submitError}
                 </div>
               )}
-              
-              <Button 
+
+              <Button
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full btn-primary text-white py-4 rounded-lg font-semibold mt-6 disabled:opacity-50"
@@ -1400,7 +1404,6 @@ function App() {
   );
 }
 
-// Helper icon component
 function CoffeeIcon() {
   return (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
