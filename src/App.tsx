@@ -32,8 +32,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 
 // URL del Webhook de Google Apps Script
 // REEMPLAZA ESTA URL con la tuya después de desplegar el script
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwMsELF-sCtP0U74DciTkQVeoRAtuzbJbvUZiF4_YcxKdabV_az5WbxJ34IAC5LT4Cf_Q/exec
-';
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwMsELF-sCtP0U74DciTkQVeoRAtuzbJbvUZiF4_YcxKdabV_az5WbxJ34IAC5LT4Cf_Q/exec';
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
