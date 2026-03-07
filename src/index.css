@@ -3,44 +3,42 @@
 @tailwind utilities;
 
 /* SailPoint Brand Colors - Official Palette */
-:root {
-  /* Primary Colors */
-  --sailpoint-navy: #003366;
-  --sailpoint-blue: #0072CE;
-  --sailpoint-cyan: #00A3E0;
-  --sailpoint-teal: #00B8A9;
-  
-  /* Accent Colors */
-  --sailpoint-purple: #7B5CF5;
-  --sailpoint-magenta: #E91E8C;
-  --sailpoint-violet: #6366F1;
-  
-  /* Background Colors */
-  --sailpoint-dark: #0A1628;
-  --sailpoint-darker: #050D18;
-  --sailpoint-navy-dark: #001a33;
-  
-  /* Shadcn Theme Variables */
-  --background: 216 50% 5%;
-  --foreground: 210 40% 98%;
-  --card: 216 50% 8%;
-  --card-foreground: 210 40% 98%;
-  --popover: 216 50% 8%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 207 100% 45%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 217 50% 17%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  --accent: 188 100% 44%;
-  --accent-foreground: 222 47% 5%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217 50% 20%;
-  --input: 217 50% 20%;
-  --ring: 207 100% 45%;
-  --radius: 0.75rem;
+@layer base {
+  :root {
+    /* Fondos principales (Darker & Navy Dark) */
+    --background: 216 65% 6%;      /* #050D18 - El azul más oscuro */
+    --foreground: 210 40% 98%;
+    
+    /* Tarjetas y contenedores */
+    --card: 216 60% 9%;            /* #0A1628 - Un tono ligeramente más claro que el fondo */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 216 60% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Colores de marca aplicados a UI */
+    --primary: 207 100% 40%;       /* SailPoint Blue #0072CE */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 40% 15%;      /* Navy oscuro para botones secundarios */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 30% 15%;
+    --muted-foreground: 215 20% 70%;
+
+    /* Acentos: Usamos el Cian de SailPoint para llamar la atención */
+    --accent: 188 100% 44%;        /* SailPoint Cyan #00A3E0 */
+    --accent-foreground: 222 47% 5%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 50% 15%;         /* Bordes sutiles azulados */
+    --input: 217 50% 15%;
+    --ring: 188 100% 44%;          /* El anillo de enfoque en Cian */
+
+    --radius: 0.75rem;
+  }
 }
 
 @layer base {
