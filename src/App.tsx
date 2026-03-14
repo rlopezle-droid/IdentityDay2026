@@ -1139,9 +1139,9 @@ function App() {
               © 2026 SailPoint Technologies, Inc. Todos los derechos reservados.
             </p>
             <div className="flex gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-white transition-colors">Privacidad</a>
-              <a href="#" className="hover:text-white transition-colors">Términos</a>
-              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+              <a href="https://www.sailpoint.com/legal/privacy" className="hover:text-white transition-colors">Privacidad</a>
+              <a href="https://www.sailpoint.com/legal/terms-of-use" className="hover:text-white transition-colors">Términos</a>
+              <a href="https://www.sailpoint.com/legal/cookie-notice" className="hover:text-white transition-colors">Cookies</a>
             </div>
           </div>
         </div>
